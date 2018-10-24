@@ -1,4 +1,0 @@
-https://www.w3schools.com/html/html_images.asp --how to put an image in a link
-https://www.w3schools.com/howto/howto_css_fixed_sidebar.asp --fixed sidenav bar
-
-penrose images obtained from google search for penrose tilings art
