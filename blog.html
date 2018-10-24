@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+    <link href="style/temp_blog.css" rel="stylesheet">
+</head>
+<body>
+<div class="header">
+  <h2>CTF Writeups</h2>
+</div>
+
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card">
+      <h2>HITCON 2018 CTF ABYSS 1 230pts</h2>
+      <h5>Pwning, Kvm, Kernel Oct 21, 2018</h5>
+      <img class="fakeimg" src = "pictures\challenge_prompt.png" style="height:210px;">
+      <h2>Prompt</h2>
+      <p>Abyss was a set of three challenges focused on the 3 main parts of kvm: user interaction from an elf binary, interaction with the kernel, and the hipervisor. This article focuses on the user phase.</p>
+      <h2>Initial analysis</h2>
+      <p>Only two binaries concern us for this phase, user.elf and kernel.bin. User.elf was a 64 bit elf binary that emulated a virtual stack within it through the following functions:</p>
+      <a href="documents\user_mod.c">psuedo code</a>
+      <h2>Problems in the kernel</h2>
+      <p>While the binary has a non executable stack, it is using a custom kernel that does not support nx. Therefore, all parts of the binary have read, write, and executable permissions. Further analysis of the kernel in binary ninja reveals that it has an open function that will only open a few filenames, including flag.txt.</p>
+      <h2>Gaining Control</h2>
+      <p>Two of the functions, swap and rotate, do not check the bounds of the custom stack pointer, but assume enough arguments have been put on the stack. We can exploit this.</p>
+      <img src="pictures\blank_stack.png" alt="blank_stack" style = "width: 350px; height: 60px; border 10;">
+      <p>This is the custom stack pointer before any of are input has executed</p>
+      <img src="pictures\push_overflow.png" alt="push_overflow" style = "width: 350px; height: 30px; border 10;">
+      <p>Now we push a value onto the stack. Since there are only 8 bits, we are able to overflow that value to make it negative. We can see that machine, the custom stack offset, increments by one.</p>
+      <img src="pictures\first_swap.png" alt="first_swap" style = "width: 350px; height: 30px; border 10;">
+      <p>Using swap, it now puts the negative value in the machine offset, so that machine will write at an above address. Are offset writes right after printf's got entry.</p>
+      <img src="pictures\original_printf.png" alt="original_printf" style = "width: 350px; height: 30px; border 10;">
+      <p>Next we push the offset we need to add to printf to hit the shellcode. It is the third value above, with printf being the two previous addresses. Now we need add the offset to its least significant bytes.</p>
+      <img src="pictures\first_rotate.png" alt="first_rotate" style = "width: 350px; height: 30px; border 10;">
+      <p>Using rotate, we can flip around the values on the stack. The reason for this is the wherever machine is pointing to will be overwritten with are print command. Therefore we need to add the offset without affecting the most significant bytes of printf.</p>
+      <img src="pictures\second_swap.png" alt="second_swap" style = "width: 350px; height: 30px; border 10;">
+      <p>Swapping again, we switch printf and are offset. This may be unecessary since they are going to get added anyway.</p>
+      <img src="pictures\add_offset.png" alt="add_offset" style = "width: 350px; height: 30px; border 10;">
+      <p>Now we add are offset to printf</p>
+      <img src="pictures\restore_original.png" alt="restore_original" style = "width: 300px; height: 30px; border 10;">
+      <p>Swapping again, we put are modified address back in printf, and move the upper part of the address back to its original location. Now when printf is called, it will jump to our shellcode.</p>
+      <a href="documents\abyss.py">Exploit Script</a>
+      <h2>Conclusion</h2>
+      <p>See the exploit script above for a detailed walkthrough. This challenged can be broken up into three parts:</p>
+	  <ol>
+         <li>Realizing the kernel did not support NX stack and only supported certain syscalls.</li>
+         <li>Figuring out how to overwrite printf to point at the shellcode using only the known offset to your shellcode (aslr still in use)</li>
+         <li>Writing shellcode to open flag.txt and write it to standard out.</li>
+	  </ol>
+    </div>
+    <div class="card">
+      <h2>TITLE HEADING</h2>
+      <h5>Title description, Sep 2, 2017</h5>
+      <div class="fakeimg" style="height:200px;">Image</div>
+      <p>Some text..</p>
+    </div>
+  </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <h2>About Me</h2>
+      <div class="fakeimg" style="height:100px;">Image</div>
+      <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
+    </div>
+    <div class="card">
+      <h3>Popular Post</h3>
+      <div class="fakeimg">Image</div><br>
+      <div class="fakeimg">Image</div><br>
+      <div class="fakeimg">Image</div>
+    </div>
+    <div class="card">
+      <h3>Follow Me</h3>
+      <p>Some text..</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <h2>Footer</h2>
+</div>
+
+</body>
+</html>
