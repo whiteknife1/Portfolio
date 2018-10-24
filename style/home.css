@@ -1,0 +1,64 @@
+html{
+    font-size: 14px;
+    font-family: 'Comic Sans MS', 'Open Sans', sans-serif;
+}
+body{
+    background-color: #ADD8E6;
+}
+.header{
+    text-align: center;
+}
+.links{
+    padding-right: 10px;
+}
+.sidenav{
+    height: 100%;
+    width: 16%;
+    position: fixed; /*Side bar does not move with scroll*/
+    z-index: 1; /*Stay on top*/
+    top: 0; /*Stay at top*/
+    right: 0;
+    background-color: #DDD3B1;
+    overflow-x: hidden; /*No horizontal scroll*/
+    padding-top: 20px;
+    padding-left: 5px;
+}
+.table{
+    font-size: 18px;
+    text-align: center;
+    padding: 10px;
+}
+.a_blog{
+    font-size: 18px;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+}
+.a_projects{
+    font-size: 18px;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+}
+.a_education{
+    font-size: 18px;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+}
+.a_biography{
+    font-size: 18px;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+}
+.p{
+    width: 80%;
+    float: left;
+    text-alignL right;
+}
+tablesize{
+    font-size: 18px;
+    text-align: center;
+}
+
