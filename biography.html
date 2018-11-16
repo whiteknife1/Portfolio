@@ -1,10 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Biography</title>
-</head>
-<body>
-    
-</body>
+   <head>
+      <meta charset="UTF-8">
+      <title>Biography</title>
+      <script src = "scripts/w3.js"></script>
+      <link href="style/w3.css" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+   </head>
+   <style type="text/css">
+body{background-image: url("background.jfif");}
+h1, h2{font-family: 'Roboto', "Comic Sans MS", sans-serif;}
+   </style>
+   <body>
+      <div w3-include-html = "sidenav.html"></div>
+      <header class = "w3-panel w3-blue-gray w3-animate-top" style = "margin-right: 6%; margin-left: 6%">
+         <img class = "w3-opacity-min w3-round w3-padding-small" src="Image/biography.jfif" alt="Bio" style = "margin-left: 5%; float: left; width: 60px; height: 60px">
+         <h1 style = "float: left; margin-left: 5%; margin-right: 5%">Biography</h1>
+         <img class= "w3-opacity-min w3-round w3-padding-small" src="Image/biography.jfif" alt="Bio" style = "float: left; width: 60px; height: 60px">
+      </header>
+      <div w3-include-html = "nav.html"></div>
+      <div class="w3-container w3-gray w3-border w3-border-blue w3-hover-border-black w3-hover-shadow" style = "margin-right: 20%; margin-left: 6%">
+         <h2 class = "w3-center">Biography</h2>
+         <div class = "w3-container w3-center">
+            <img class = "w3-grayscale" src="Image/storm.jpg" alt="Me" style = "width: 25%; height: 30%">
+         </div>
+         <p style = "margin-right: 16%; margin-left: 5%">Hello, My name is John Eberling. I am currently a Computer Science major at the United States Military Academy. I am currently in my second year here. I am proficient at programming in both java and python. In my freetime I practice amateur hacking through participating in online competitions with a focus on Reverse Engineering and Pwning binaries.</p>
+      </div>
+      <div w3-include-html = "footer.html"></div>
+      <script>w3.includeHTML();</script>
+   </body>
 </html>

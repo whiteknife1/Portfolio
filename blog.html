@@ -1,84 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Blog</title>
-    <link href="style/temp_blog.css" rel="stylesheet">
-</head>
-<body>
-<div class="header">
-  <h2>CTF Writeups</h2>
-</div>
+   <head>
+      <meta charset="UTF-8">
+      <title>Blog</title>
+      <script src = "scripts/main.js"></script>
+      <script src = "scripts/w3.js"></script>
+      <script src = "scripts/abyss1.js"></script>
+      <script src = "scripts/abyss2.js"></script>
+      <script src = "scripts/baby1.js"></script>
+      <script src = "scripts/baby2.js"></script>
+      <link href="style/w3.css" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+   </head>
+   <style type="text/css">
+body{background-image: url("background.jfif");}
+h1, h2{font-family: 'Roboto', "Comic Sans MS", sans-serif;}
+   </style>
+   <body>
+      <div w3-include-html = "sidenav.html"></div>
+      <header class = "w3-panel w3-blue-gray w3-animate-top" style = "margin-right: 5%; margin-left: 5%">
+         <img class = "w3-opacity-min w3-round w3-padding-small" src="Image/blog.png" alt="Blog" style = "margin-left: 5%; float: left; width: 60px; height: 60px">
+         <h1 style = "float: left; margin-left: 5%; margin-right: 5%">My Blog</h1>
+         <img class= "w3-opacity-min w3-round w3-padding-small" src="Image/blog.png" alt="Blog" style = "float: left; width: 60px; height: 60px">
+      </header>
+      <div w3-include-html = "nav.html"></div>
+      <div class="w3-container" style = "margin-left: 5%; margin-right: 20%">
+         <div class="w3-card w3-blue-gray w3-margin-bottom">
+            <h2>Delhi CTF 2018</h2>
+            <h5>Reversing, Beginner: Oct 25, 2018</h5>
+            <img class="w3-bottombar w3-leftbar w3-rightbar w3-topbar w3-border-gray" src = "Delhi_CTF\delhi_logo.PNG" style="height:210px; width: 60%">
+            <button onclick= "toggle('delhi')">Expand/Hide</button>
+            <div id="delhi" style = "display:none; margin-right: 8%">
+               w3.includeHTML(Delhi_CTF/delhi.html)
+               <div id="rev">
+                  <h2>REV 200 pts</h2>
+                  <h3>STARTING OUT</h3>
+                  <p>We are given a 32-bit stripped binary. Looking in Binary Ninja, we can see where the main function is. The function at address 7a0 prints a flag based off of our input, so that is where we want to end up.</p>
+                  <h3>Getting Pass initial checks</h3>
+                  <p>The function is searching for an environment variable called team_name, and checking to see if it is equal to the string "bi0s".</p>
+                  <p>Since that environment does not exist, we will have to create it. The command is as follows:</p>
+                  <p>$ export team_name="bi0s"</p>
+                  <p>Note: above method only stays in environment while current shell is open. On termination it will disappear.</p>
+                  <h3>Reversing Function at 0x7ec</h3>
+                  <p>To get to the flag, we need eax to equal 1 at address 0xa32. Eax is set in the function 0x7ec</p>
+                  <p> The function, takes are string, performs mathematical and bitwise operations on it, and compares it to a string in memory.</p>
+                  <p>The solution is to take the string in memory, perform the operations in reverse order, and print that out.</p>
+                  <p>This solution can be seen in the python script linked below. The binary is also linked.</p>
+                  <a href="Delhi_CTF\rev">Binary</a>
+                  <a href="Delhi_CTF\solveRev.py">Exploit Script</a>
+               </div>
+               <div class="avap"></div>
+            </div>
+         </div>
 
-<div class="row">
-  <div class="leftcolumn">
-    <div class="card">
-      <h2>HITCON 2018 CTF ABYSS 1 230pts</h2>
-      <h5>Pwning, Kvm, Kernel Oct 21, 2018</h5>
-      <img class="fakeimg" src = "pictures\challenge_prompt.png" style="height:210px;">
-      <h2>Prompt</h2>
-      <p>Abyss was a set of three challenges focused on the 3 main parts of kvm: user interaction from an elf binary, interaction with the kernel, and the hipervisor. This article focuses on the user phase.</p>
-      <h2>Initial analysis</h2>
-      <p>Only two binaries concern us for this phase, user.elf and kernel.bin. User.elf was a 64 bit elf binary that emulated a virtual stack within it through the following functions:</p>
-      <a href="documents\user_mod.c">psuedo code</a>
-      <h2>Problems in the kernel</h2>
-      <p>While the binary has a non executable stack, it is using a custom kernel that does not support nx. Therefore, all parts of the binary have read, write, and executable permissions. Further analysis of the kernel in binary ninja reveals that it has an open function that will only open a few filenames, including flag.txt.</p>
-      <h2>Gaining Control</h2>
-      <p>Two of the functions, swap and rotate, do not check the bounds of the custom stack pointer, but assume enough arguments have been put on the stack. We can exploit this.</p>
-      <img src="pictures\blank_stack.png" alt="blank_stack" style = "width: 350px; height: 60px; border 10;">
-      <p>This is the custom stack pointer before any of are input has executed</p>
-      <img src="pictures\push_overflow.png" alt="push_overflow" style = "width: 350px; height: 30px; border 10;">
-      <p>Now we push a value onto the stack. Since there are only 8 bits, we are able to overflow that value to make it negative. We can see that machine, the custom stack offset, increments by one.</p>
-      <img src="pictures\first_swap.png" alt="first_swap" style = "width: 350px; height: 30px; border 10;">
-      <p>Using swap, it now puts the negative value in the machine offset, so that machine will write at an above address. Are offset writes right after printf's got entry.</p>
-      <img src="pictures\original_printf.png" alt="original_printf" style = "width: 350px; height: 30px; border 10;">
-      <p>Next we push the offset we need to add to printf to hit the shellcode. It is the third value above, with printf being the two previous addresses. Now we need add the offset to its least significant bytes.</p>
-      <img src="pictures\first_rotate.png" alt="first_rotate" style = "width: 350px; height: 30px; border 10;">
-      <p>Using rotate, we can flip around the values on the stack. The reason for this is the wherever machine is pointing to will be overwritten with are print command. Therefore we need to add the offset without affecting the most significant bytes of printf.</p>
-      <img src="pictures\second_swap.png" alt="second_swap" style = "width: 350px; height: 30px; border 10;">
-      <p>Swapping again, we switch printf and are offset. This may be unecessary since they are going to get added anyway.</p>
-      <img src="pictures\add_offset.png" alt="add_offset" style = "width: 350px; height: 30px; border 10;">
-      <p>Now we add are offset to printf</p>
-      <img src="pictures\restore_original.png" alt="restore_original" style = "width: 300px; height: 30px; border 10;">
-      <p>Swapping again, we put are modified address back in printf, and move the upper part of the address back to its original location. Now when printf is called, it will jump to our shellcode.</p>
-      <a href="documents\abyss.py">Exploit Script</a>
-      <h2>Conclusion</h2>
-      <p>See the exploit script above for a detailed walkthrough. This challenged can be broken up into three parts:</p>
-	  <ol>
-         <li>Realizing the kernel did not support NX stack and only supported certain syscalls.</li>
-         <li>Figuring out how to overwrite printf to point at the shellcode using only the known offset to your shellcode (aslr still in use)</li>
-         <li>Writing shellcode to open flag.txt and write it to standard out.</li>
-	  </ol>
-    </div>
-    <div class="card">
-      <h2>TITLE HEADING</h2>
-      <h5>Title description, Sep 2, 2017</h5>
-      <div class="fakeimg" style="height:200px;">Image</div>
-      <p>Some text..</p>
-    </div>
-  </div>
-  <div class="rightcolumn">
-    <div class="card">
-      <h2>About Me</h2>
-      <div class="fakeimg" style="height:100px;">Image</div>
-      <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
-    </div>
-    <div class="card">
-      <h3>Popular Post</h3>
-      <div class="fakeimg">Image</div><br>
-      <div class="fakeimg">Image</div><br>
-      <div class="fakeimg">Image</div>
-    </div>
-    <div class="card">
-      <h3>Follow Me</h3>
-      <p>Some text..</p>
-    </div>
-  </div>
-</div>
-
-<div class="footer">
-  <h2>Footer</h2>
-</div>
-
-</body>
+         <div class="w3-card w3-blue-gray w3-margin-bottom"> 
+            <h2>HITCON 2018 CTF ABYSS 1 230pts</h2>
+            <h5>Pwning, Kvm, Kernel: Oct 21, 2018</h5>
+            <img class="w3-bottombar w3-leftbar w3-rightbar w3-topbar w3-border-gray" src = "abyss\challenge_prompt.PNG" style="height:210px; width: 60%;">
+            <button onclick= "toggle('abyss')">Expand/Hide</button>
+            <div id = "abyss" style = "display:none; margin-right: 8%">
+               <ul id = "abyss_one">
+                  <p w3-repeat = "entry_one" class = {{Category}}>{{Prompt}}</p>
+               </ul>
+               <a href="documents\user_mod.c">psuedo code</a>
+               <h2>Gaining Control</h2>
+               <p>Two of the functions, swap and rotate, do not check the bounds of the custom stack pointer, but assume enough arguments have been put on the stack. We can exploit this.</p>
+               <img src="abyss\blank_stack.PNG" alt="blank_stack" style = "width: 350px; height: 60px; border 10;"></img>
+               <p>This is the custom stack pointer before any of are input has executed</p>
+               <img src="abyss\push_overflow.PNG" alt="push_overflow" style = "width: 350px; height: 30px; border 10;"></img>
+               <p>Now we push a value onto the stack. Since there are only 8 bits, we are able to overflow that value to make it negative. We can see that machine, the custom stack offset, increments by one.</p>
+               <img src="abyss\first_swap.PNG" alt="first_swap" style = "width: 350px; height: 30px; border 10;">
+               <p>Using swap, it now puts the negative value in the machine offset, so that machine will write at an above address. Are offset writes right after printf's got entry.</p>
+               <img src="abyss\original_printf.PNG" alt="original_printf" style = "width: 350px; height: 30px; border 10;"></img>
+               <p>Next we push the offset we need to add to printf to hit the shellcode. It is the third value above, with printf being the two previous addresses. Now we need add the offset to its least significant bytes.</p>
+               <img src="abyss\first_rotate.PNG" alt="first_rotate" style = "width: 350px; height: 30px; border 10;"></img>
+               <p>Using rotate, we can flip around the values on the stack. The reason for this is the wherever machine is pointing to will be overwritten with are print command. Therefore we need to add the offset without affecting the most significant bytes of printf.</p>
+               <img src="abyss\second_swap.PNG" alt="second_swap" style = "width: 350px; height: 30px; border 10;"></img>
+               <p>Swapping again, we switch printf and are offset. This may be unecessary since they are going to get added anyway.</p>
+               <img src="abyss\add_offset.PNG" alt="add_offset" style = "width: 350px; height: 30px; border 10;"></img>
+               <p>Now we add are offset to printf</p>
+               <img src="abyss\restore_original.PNG" alt="restore_original" style = "width: 300px; height: 30px; border 10;"></img>
+               <p>Swapping again, we put are modified address back in printf, and move the upper part of the address back to its original location. Now when printf is called, it will jump to our shellcode.</p>
+               <a href="documents\abyss.py">Exploit Script</a>
+               <h2>Conclusion</h2>
+               <h5>See the exploit script above for a detailed walkthrough. This challenged can be broken up into three parts:</h5>
+               <ol id = "abyss_two">
+                  <li w3-repeat = "entry_two"> {{List}}</li>
+            </div>
+         </div>
+         <div class="w3-card w3-blue-gray w3-margin-bottom">
+            <h2>BabyReverse Hacklu CTF 2018 50pts</h2>
+            <h5>Reversing, Beginner: Oct 17, 2018</h5>
+            <img class="w3-bottombar w3-leftbar w3-rightbar w3-topbar w3-border-gray" src = "baby_reverse\prompt.PNG" style="height:130px; width: 60%">
+            <button onclick= "toggle('babyRev')">Expand/Hide</button>
+            <div id="babyRev" style = "display:none; margin-right: 8%">
+               <h3>PROMPT</h3>
+               <ul id = "baby_one">
+                  <li w3-repeat = "entry_one"> {{Part}}</li>
+               </ul>
+               <div style = "margin-left: 10%">
+                  <img src="baby_reverse\function.PNG" alt="restore_original" style = "width: 300px; height: 400px; border 10;"></img>
+               </div>
+               <a href="baby_reverse\solveChall.py">Solve</a>
+               <ul id = "baby_two">
+                  <li w3-repeat = "entry_two">{{Part}}</li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      <div w3-include-html = "footer.html"></div>
+      <script>
+         w3.includeHTML();
+         w3.displayObject("abyss_one", abyss1);
+         w3.displayObject("abyss_two", abyss2);
+         w3.displayObject("baby_one", baby1);
+         w3.displayObject("baby_two", baby2);
+      </script>
+   </body>
 </html>

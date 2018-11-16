@@ -1,0 +1,24 @@
+app-admin/sudo offensive sssd -gcrypt -openssl -sendmail
+app-antivirus/tar minimal
+app-crypt/libb2 native-cflags
+app-editors/neovim clipboard nvimpager -remote -tui
+app-editors/vim X terminal vim-pager -racket
+app-emulation/docker apparmor device-mapper container-init -aufs -btrfs -overlay -pkcs1l
+app-emulation/qemu capstone curl gnutls jpeg png ssh static usb -accessibility 
+app-emulation/vagrant virtualbox
+app-emulation/virtualbox headless sdk -udev -vboxwebsrv
+app-emulation/virtualbox-bin additions headless
+app-office/libreoffice googledrive odk pdfimport vlc -coinmp
+app-shells/bash net plugins
+dev-haskell/text developer
+dev-haskell/x11 screensaver
+dev-java/openjdk gentoo-vm headless-awt source -jbootstrap -webstart
+dev-lang/python threads wide-unicode -bluetooth -wininst
+dev-lang/ruby rdoc
+dev-lib/crypto++ asm
+dev-lib/glib dbus mime systemtap utils
+dev-vcs/git blksha1 curl gpg -cgi -highlight
+sys-devel/gcc cilk ssp
+sys-devel/gdb client multitarget python server xml
+x11-wm/i3 doc
+net-misc/dropbox librsync-bundled
